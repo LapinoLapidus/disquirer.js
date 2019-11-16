@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "lib/index.js",
-  "files": ["lib/**/*"],
+  "files": [
+    "lib/**/*"
+  ],
   "types": "lib/index.d.ts",
   "scripts": {
     "test": "ava-ts test/ --serial --verbose",
@@ -22,7 +24,6 @@
   "author": "https//github.com/LapinoLapidus Discord: LapinoLapidus#3262",
   "license": "MIT",
   "dependencies": {
-    "discord.js": "^11.5.1",
     "number-to-words": "^1.2.4"
   },
   "devDependencies": {
@@ -35,5 +36,8 @@
     "tslint": "^5.20.1",
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.7.2"
+  },
+  "peerDependencies": {
+    "discord.js": "^12.0.0"
   }
 }
