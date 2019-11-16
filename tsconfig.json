@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "esnext",
+        "rootDir": "src",
+        "outDir": "build"
+    },
+    "exclude": ["test/"]
+    //"include": ["./server.ts", "./src"]
+}

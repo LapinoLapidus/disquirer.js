@@ -1,0 +1,37 @@
+{
+  "name": "disquirer.js",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "ava-ts test/ --serial --verbose",
+    "test-automatic": "ava-ts --serial --verbose --match \"Check*\"",
+    "generate-docs": "typedoc --out docs src/",
+    "lint": "tslint src/**/*.ts",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "precommit": "npm run format && npm run test-automatic && npm run lint && tsc -p ."
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run precommit"
+    }
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^11.5.1",
+    "number-to-words": "^1.2.4"
+  },
+  "devDependencies": {
+    "@types/node": "^12.12.7",
+    "ava-ts": "^0.25.2",
+    "dotenv": "^8.2.0",
+    "husky": "^3.0.9",
+    "prettier": "^1.19.1",
+    "ts-node": "^8.5.0",
+    "tslint": "^5.20.1",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^3.7.2"
+  }
+}
