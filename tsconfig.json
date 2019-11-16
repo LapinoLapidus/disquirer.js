@@ -3,7 +3,8 @@
         "module": "commonjs",
         "target": "esnext",
         "rootDir": "src",
-        "outDir": "build"
+        "declaration": true,
+        "outDir": "./lib"
     },
     "exclude": ["test/"]
     //"include": ["./server.ts", "./src"]
