@@ -17,8 +17,8 @@
     }
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "https//github.com/LapinoLapidus Discord: LapinoLapidus#3262",
+  "license": "MIT",
   "dependencies": {
     "discord.js": "^11.5.1",
     "number-to-words": "^1.2.4"

@@ -3,7 +3,7 @@
 ### Purpose
 This library creates an interactive experience between a user and a Discord bot. 
 You could compare the front-end of it to something like [Inquirer.js](https://github.com/SBoudrias/Inquirer.js/)
-
+![disquirer.js](https://i.imgur.com/cKdPh9Q.gif)
 ### Installation
 NPM: `npm install LapinoLapidus/disquirer.js`.
 
