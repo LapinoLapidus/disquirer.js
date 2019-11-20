@@ -5,10 +5,13 @@ This library creates an interactive experience between a user and a Discord bot.
 You could compare the front-end of it to something like [Inquirer.js](https://github.com/SBoudrias/Inquirer.js/)
 ![disquirer.js](https://i.imgur.com/cKdPh9Q.gif)
 ### Installation
-NPM: `npm install LapinoLapidus/disquirer.js`.
+NPM: `npm install disquirer.js`.<br />
+Yarn: `yarn add disquirer.js`.
 
 ### Usage
-Create a new Disquirer object.
+Disquirer is written in TypeScript so enjoy the typings.
+
+Create a new Disquirer object and return answers:
 ```typescript
 import { Disquirer } from "disquirer.js";
 import { Question } from "disquirer.js";

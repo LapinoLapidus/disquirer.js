@@ -21,7 +21,12 @@
     }
   },
   "keywords": [],
-  "author": "https//github.com/LapinoLapidus Discord: LapinoLapidus#3262",
+  "author": {
+    "name": "LapinoLapidus",
+    "url": "https://github.com/LapinoLapidus",
+    "email": "redactyl@protonmail.ch",
+    "discord": "LapinoLapidus#3262"
+  },
   "license": "MIT",
   "dependencies": {
     "number-to-words": "^1.2.4"
