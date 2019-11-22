@@ -1,19 +1,25 @@
 import { Message, TextChannel, User } from "discord.js";
 import { Answer } from "./interfaces/Answer";
 import { Question } from "./interfaces/Question";
+import { Settings } from "./interfaces/Settings";
 export { Question } from "./interfaces/Question";
 export { Answer } from "./interfaces/Answer";
+export { Settings } from "./interfaces/Settings";
 export declare class Disquirer {
     get questions(): Question[];
     set questions(value: Question[]);
+    get settings(): Settings;
     private static reactionNumbers;
+    private _settings;
     private _questions;
     private currentQuestion;
     private originalQuestion;
     /**
      * The constructor used to create a Disquirer object.
+     * @param questions The questions to ask.
+     * @param settings
      */
-    constructor(questions: Question[]);
+    constructor(questions: Question[], settings?: Settings);
     /**
      * Adds corresponding reactions for a single question.
      * @param msg

@@ -2,9 +2,11 @@ import { Message, MessageCollector, MessageReaction, ReactionCollector, TextChan
 import { toWords } from "number-to-words";
 import { Answer } from "./interfaces/Answer";
 import { Question } from "./interfaces/Question";
+import { Settings } from "./interfaces/Settings";
 
 export { Question } from "./interfaces/Question";
 export { Answer } from "./interfaces/Answer";
+export { Settings } from "./interfaces/Settings";
 
 export class Disquirer {
   public get questions(): Question[] {
@@ -13,6 +15,10 @@ export class Disquirer {
 
   public set questions(value: Question[]) {
     this._questions = value;
+  }
+
+  public get settings(): Settings {
+    return this._settings;
   }
 
   // public get prefix(): string {
@@ -38,15 +44,42 @@ export class Disquirer {
   ];
 
   //private _prefix: string;
+  private _settings: Settings;
   private _questions: Question[];
   private currentQuestion: Question;
   private originalQuestion: Question[];
 
   /**
    * The constructor used to create a Disquirer object.
+   * @param questions The questions to ask.
+   * @param settings
    */
-  public constructor(questions: Question[]) {
+  public constructor(questions: Question[], settings?: Settings) {
     //this._prefix = prefix;
+    // Create default settings object if absent
+    this._settings = settings
+      ? settings
+      : ({
+          invalidAnswerMessage: "Not a valid answer.",
+          invalidAnswerDeletionTime: 5000,
+          invalidReactionMessage: "You didn't add a valid reaction.",
+          invalidReactionDeletionTime: 5000
+        } as Settings);
+
+    // Set defaults
+    this._settings.invalidAnswerMessage = this._settings.invalidAnswerMessage
+      ? this._settings.invalidAnswerMessage
+      : "Not a valid answer.";
+    this._settings.invalidAnswerDeletionTime = this._settings.invalidAnswerDeletionTime
+      ? this._settings.invalidAnswerDeletionTime
+      : 5000;
+    this._settings.invalidReactionMessage = this._settings.invalidReactionMessage
+      ? this._settings.invalidReactionMessage
+      : "You didn't add a valid reaction.";
+    this._settings.invalidReactionDeletionTime = this._settings.invalidReactionDeletionTime
+      ? this._settings.invalidReactionDeletionTime
+      : 5000;
+
     this._questions = questions;
     this.originalQuestion = questions;
   }
@@ -210,11 +243,12 @@ export class Disquirer {
   private handleReactionEvent = (reaction: MessageReaction, question: Question): Answer | null => {
     // Checks if reaction is valid.
     if (!this.getReactions(question).includes(reaction.emoji.name)) {
-      const msg: Promise<Message> = (reaction.message.channel.send(
-        "You didn't add a valid reaction."
-      ) as unknown) as Promise<Message>;
-      msg.then(m => m.delete(5000));
-      this._questions.push(question);
+      const msg: Promise<Message> = reaction.message.channel.send(this._settings.invalidReactionMessage) as Promise<
+        Message
+      >;
+      msg.then(m => m.delete(this._settings.invalidReactionDeletionTime));
+      // Adds the unfinished question back to the array.
+      this._questions.unshift(question);
       return null;
     }
     return {
@@ -245,7 +279,10 @@ export class Disquirer {
           userAnswer: msg
         } as Answer;
       } else {
-        msg.channel.send("Not a valid answer.");
+        msg.channel
+          .send(this._settings.invalidAnswerMessage)
+          .then((m: Message) => m.delete(this._settings.invalidAnswerDeletionTime));
+        // Adds the unfinished question back to the array.
         this._questions.unshift(question);
         return;
       }

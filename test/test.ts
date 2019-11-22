@@ -2,6 +2,7 @@ import test from "ava-ts";
 import { Client, TextChannel } from "discord.js";
 import * as dotenv from "dotenv";
 import { Disquirer, Question } from "../src";
+import { Settings } from "../src/interfaces/Settings";
 
 dotenv.config();
 
@@ -25,29 +26,95 @@ let disq: Disquirer;
 
 test("Check if object is creatable.", t => {
   t.truthy(
-    (disq = new Disquirer([
-      { text: "Does this work?", possibleAnswers: ["yes", "no"], reactionMethod: "reaction" },
-      { text: "Are you sure?", possibleAnswers: ["I really am", "Not really no."], reactionMethod: "reaction" },
-      { text: "Guess it works, could you confirm?", possibleAnswers: ["y", "n"], reactionMethod: "text" },
+    (disq = new Disquirer(
+      [
+        { text: "Does this work?", possibleAnswers: ["yes", "no"], reactionMethod: "reaction" },
+        { text: "Are you sure?", possibleAnswers: ["I really am", "Not really no."], reactionMethod: "reaction" },
+        { text: "Guess it works, could you confirm?", possibleAnswers: ["y", "n"], reactionMethod: "text" },
+        {
+          possibleAnswers: ["Okay", "Sure", "No Way"],
+          reactionMethod: "reaction",
+          style: "bracket",
+          text: "Just once more?"
+        },
+        { text: "Really sure?", possibleAnswers: ["Yes.."], reactionMethod: "text", style: "newLine" },
+        {
+          possibleAnswerRequired: true,
+          possibleAnswers: ["Finally", "Good job"],
+          text: "Seriously, last question. Possible answers required here."
+        },
+        { text: "Possible answers not required here.", possibleAnswers: ["Got it"], possibleAnswerRequired: false }
+      ] as Question[],
       {
-        possibleAnswers: ["Okay", "Sure", "No Way"],
-        reactionMethod: "reaction",
-        style: "bracket",
-        text: "Just once more?"
-      },
-      { text: "Really sure?", possibleAnswers: ["Yes.."], reactionMethod: "text", style: "newLine" },
-      {
-        possibleAnswerRequired: true,
-        possibleAnswers: ["Finally", "Good job"],
-        text: "Seriously, last question. Possible answers required here."
-      },
-      { text: "Possible answers not required here.", possibleAnswers: ["Got it"], possibleAnswerRequired: false }
-    ] as Question[]))
+        invalidReactionMessage: "Invalid reaction.",
+        invalidAnswerMessage: "Invalid answer."
+      } as Settings
+    ))
   );
 });
 
 test("Check the possible answers for brackets style.", t => {
   t.is(disq.getPossibleAnswers(true, { text: "Are you good?", possibleAnswers: ["Y", "n"] } as Question), "[Y/n]");
+});
+
+test("Check the default values with no Settings object.", t => {
+  t.deepEqual(new Disquirer(null).settings, {
+    invalidAnswerMessage: "Not a valid answer.",
+    invalidAnswerDeletionTime: 5000,
+    invalidReactionMessage: "You didn't add a valid reaction.",
+    invalidReactionDeletionTime: 5000
+  } as Settings);
+});
+
+test("Check the default values with only invalidAnswerMessage.", t => {
+  t.deepEqual(new Disquirer(null, { invalidAnswerMessage: "a" } as Settings).settings, {
+    invalidAnswerMessage: "a",
+    invalidAnswerDeletionTime: 5000,
+    invalidReactionMessage: "You didn't add a valid reaction.",
+    invalidReactionDeletionTime: 5000
+  } as Settings);
+});
+
+test("Check the default values with only invalidAnswerDeletionTime and previous.", t => {
+  t.deepEqual(new Disquirer(null, { invalidAnswerMessage: "a", invalidAnswerDeletionTime: 10 } as Settings).settings, {
+    invalidAnswerMessage: "a",
+    invalidAnswerDeletionTime: 10,
+    invalidReactionMessage: "You didn't add a valid reaction.",
+    invalidReactionDeletionTime: 5000
+  } as Settings);
+});
+
+test("Check the default values with only invalidReactionMessage and previous.", t => {
+  t.deepEqual(
+    new Disquirer(null, {
+      invalidAnswerMessage: "a",
+      invalidAnswerDeletionTime: 10,
+      invalidReactionMessage: "b"
+    } as Settings).settings,
+    {
+      invalidAnswerMessage: "a",
+      invalidAnswerDeletionTime: 10,
+      invalidReactionMessage: "b",
+      invalidReactionDeletionTime: 5000
+    } as Settings
+  );
+});
+
+test("Check the default values with only invalidReaction and previous.", t => {
+  t.deepEqual(
+    new Disquirer(null, {
+      invalidAnswerMessage: "a",
+      invalidAnswerDeletionTime: 10,
+      invalidReactionMessage: "b",
+      invalidReactionDeletionTime: 20
+    } as Settings).settings,
+    {
+      invalidAnswerMessage: "a",
+      invalidAnswerDeletionTime: 10,
+      invalidReactionMessage: "b",
+      invalidReactionDeletionTime: 20
+    } as Settings
+  );
 });
 
 test("Test prompt.", async t => {
