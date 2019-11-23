@@ -101,6 +101,6 @@ export class Disquirer {
    * @returns promise - Resolves with an array of answers. Rejects with an error.
    */
   public createPrompt = async (channel: TextChannel, target: User): Promise<Answer[]> => {
-    return new Asker(this._questions, this._settings, channel, target).ask();
+    return new Asker([...this._questions], this._settings, channel, target).ask();
   };
 }
