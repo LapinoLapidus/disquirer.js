@@ -13,8 +13,7 @@ Yarn: `yarn add disquirer.js`.
 
 ### Usage
 
-Disquirer is written in TypeScript so enjoy the typings.
-
+Disquirer is written in TypeScript so enjoy the typings.<br />
 Create a new Disquirer object and return answers:
 
 ```typescript
@@ -30,7 +29,11 @@ const settings = {
   invalidReactionMessage: "You didn't add a valid reaction.",
   invalidReactionDeletionTime: 5000
 } as Settings;
-const disquirer = new Disquirer([{}] as Question[], settings);
+// For the text argument in the Question object, you can also pass a RichEmbed.
+const questions = [
+  { text: "Testing one question.", reactionMethod: "reaction", possibleAnswers: ["Ok"] }
+] as Question[];
+const disquirer = new Disquirer(questions, settings);
 
 // TEXT_CHANNEL is an object of type TextChannel, USER is an object of type User from discord.js.
 const answers = await disquirer.createPrompt(TEXT_CHANNEL, USER);

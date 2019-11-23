@@ -7,7 +7,6 @@ import {
   TextChannel,
   User
 } from "discord.js";
-import { toWords } from "number-to-words";
 import { Asker } from "./Asker";
 import { Answer } from "./interfaces/Answer";
 import { Question } from "./interfaces/Question";
@@ -39,7 +38,7 @@ export class Disquirer {
   // }
 
   // [0] = :zero: 0️⃣
-  static reactionNumbers = [
+  public static reactionNumbers = [
     "\u0030\u20E3",
     "\u0031\u20E3",
     "\u0032\u20E3",
@@ -52,7 +51,7 @@ export class Disquirer {
     "\u0039\u20E3"
   ];
 
-  //private _prefix: string;
+  // private _prefix: string;
   private _settings: Settings;
   private _questions: Question[];
   private currentQuestion: Question;
@@ -64,7 +63,7 @@ export class Disquirer {
    * @param settings
    */
   public constructor(questions: Question[], settings?: Settings) {
-    //this._prefix = prefix;
+    // this._prefix = prefix;
     // Create default settings object if absent
     this._settings = settings
       ? settings
