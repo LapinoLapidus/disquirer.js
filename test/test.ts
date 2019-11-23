@@ -1,7 +1,8 @@
 import test from "ava-ts";
-import { Client, TextChannel } from "discord.js";
+import { Client, RichEmbed, TextChannel } from "discord.js";
 import * as dotenv from "dotenv";
 import { Disquirer, Question } from "../src";
+import { Asker } from "../src/Asker";
 import { Settings } from "../src/interfaces/Settings";
 
 dotenv.config();
@@ -54,7 +55,7 @@ test("Check if object is creatable.", t => {
 });
 
 test("Check the possible answers for brackets style.", t => {
-  t.is(disq.getPossibleAnswers(true, { text: "Are you good?", possibleAnswers: ["Y", "n"] } as Question), "[Y/n]");
+  t.is(Asker.getPossibleAnswers(true, { text: "Are you good?", possibleAnswers: ["Y", "n"] } as Question), "[Y/n]");
 });
 
 test("Check the default values with no Settings object.", t => {
@@ -124,6 +125,17 @@ test("Test prompt.", async t => {
     bot.users.get(process.env.USER_ID)
   );
   t.truthy(answers);
+});
+
+test("Test prompt with embed.", async t => {
+  const answers = await new Disquirer([
+    { text: new RichEmbed().setDescription("Hello").addField("Gamer", "Yes"), reactionMethod: "reaction", possibleAnswers: ["Ok"] }
+  ] as Question[]).createPrompt(
+    ((await bot.users.get(process.env.USER_ID).createDM()) as unknown) as TextChannel,
+    bot.users.get(process.env.USER_ID)
+  );
+  t.truthy(answers);
+
 });
 
 test("Test prompt with single question, bracket style with reaction.", async t => {

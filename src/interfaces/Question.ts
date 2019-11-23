@@ -1,8 +1,10 @@
+import { RichEmbed } from "discord.js";
+
 export interface Question {
   /**
    * The question.
    */
-  text: string;
+  text: RichEmbed | string;
   /**
    * An array of possible answers for the question.
    * Required for a question with reaction for reactionMethod.
