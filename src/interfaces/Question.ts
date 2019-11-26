@@ -1,4 +1,5 @@
 import { RichEmbed } from "discord.js";
+import { Answer } from "./Answer";
 
 export interface Question {
   /**
@@ -41,12 +42,15 @@ export interface Question {
    */
   reactionMethod: "text" | "reaction";
   /**
-   * The datatype which will be checked when the question is answered.
+   * Filter the answer to check if it fits your criteria.
+   *
+   * If you return `true`, the answer is accepted.<br />
+   * If you return `false`, the question gets asked again until there is a sufficient answer.
+   *
+   * Example that checks if length of the answer is equal to 1:
+   *
+   * ```(answer) => answer.response.length === 1```
+   *
    */
-  dataType?: string;
-  /**
-   * If datatype is `number`, then it will be checked if it's bigger than or equal to the length.
-   * If datatype is `string`, then it will compare the string length to see if it's bigger than or equal to the length.
-   */
-  length?: number;
+  filter: (answer: Answer) => boolean;
 }

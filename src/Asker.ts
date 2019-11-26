@@ -22,6 +22,9 @@ export class Asker {
   public static getPossibleAnswers = (bracketStyle: boolean, question: Question): string => {
     // TODO: add prefix
     let suffix: string;
+    if (!question.possibleAnswers) {
+      return "";
+    }
     if (bracketStyle) {
       suffix = "[";
       question.possibleAnswers.forEach(answer => (suffix += `/${answer}`));
@@ -66,15 +69,14 @@ export class Asker {
 
     // const questionsText: string[] = this._questions.map(question => question.text);
     // Create a suffix for the message so the questions are in a clear format.
-    const possibleAnswers = Asker.getPossibleAnswers(question.style === "bracket", question);
-    if (!possibleAnswers) {
-      return Promise.reject("Please do not add more than 9 answers to the possibleAnswers array.");
+    if (question.possibleAnswers && question.possibleAnswers.length > 9) {
+      return Promise.reject("Please do not add more than 9 possible answers to the possibleAnswers array.");
     }
 
     const message = (await this.channel.send(
       question.text instanceof RichEmbed
         ? question.text
-        : question.text + Asker.getPossibleAnswers(question.style === "bracket", question)
+        : question.text + (question.possibleAnswers ? Asker.getPossibleAnswers(question.style === "bracket", question) : "")
     )) as Message;
     question.reactionMethod === "reaction" ? this.addReactions(message, question) : "";
     const collector: ReactionCollector | MessageCollector =
@@ -161,7 +163,7 @@ export class Asker {
    * @param question
    */
   private handleMessageEvent = (msg: Message, question: Question): Answer | null => {
-    const possibleAnswers = question.possibleAnswers.map(answer => answer.toLocaleLowerCase());
+    const possibleAnswers = question.possibleAnswers ? question.possibleAnswers.map(answer => answer.toLocaleLowerCase()) : [];
 
     // Defaults possibleAnswerRequired to true.
     question.possibleAnswerRequired === undefined
@@ -185,13 +187,27 @@ export class Asker {
       }
     }
 
-    return {
-      response: msg.content,
-      responseId: Number(
-        Object.keys(possibleAnswers).find(key => possibleAnswers[key] === msg.content.toLocaleLowerCase())
-      ),
+    const filterPassed = this.currentQuestion.filter ? this.currentQuestion.filter({
+      response: possibleAnswers[Number(msg.content)] === undefined ? msg.content : possibleAnswers[Number(msg.content)],
+      responseId: Number(msg.content),
       userAnswer: msg
-    } as Answer;
+    } as Answer) : true;
+    if(filterPassed) {
+      return {
+        response: msg.content,
+        responseId: Number(
+          Object.keys(possibleAnswers).find(key => possibleAnswers[key] === msg.content.toLocaleLowerCase())
+        ),
+        userAnswer: msg
+      } as Answer;
+    }
+    msg.channel
+      .send(this.settings.invalidAnswerMessage)
+      .then((m: Message) => m.delete(this.settings.invalidAnswerDeletionTime));
+    // Adds the unfinished question back to the array.
+    this.questions.unshift(question);
+    return;
+
   };
 
   private controllerHandler = (
@@ -227,7 +243,7 @@ export class Asker {
     const message = (await channel.send(
       question.text instanceof RichEmbed
         ? question.text
-        : question.text + Asker.getPossibleAnswers(question.style === "bracket", question)
+        : question.text + (question.possibleAnswers ? Asker.getPossibleAnswers(question.style === "bracket", question) : "")
     )) as Message;
     question.reactionMethod === "reaction" ? this.addReactions(message, question) : "";
 

@@ -127,15 +127,30 @@ test("Test prompt.", async t => {
   t.truthy(answers);
 });
 
+test("Test prompt with filter: length = 1.", async t => {
+  const answers = await new Disquirer([
+    {
+      text: "Would you respond with text of a length of 1?",
+      reactionMethod: "text",
+      possibleAnswerRequired: false,
+      filter: answer => answer.response.length === 1
+    }
+  ] as Question[]).createPrompt(bot.users.get(process.env.USER_ID).dmChannel, bot.users.get(process.env.USER_ID));
+  t.truthy(answers);
+});
+
 test("Test prompt with embed.", async t => {
   const answers = await new Disquirer([
-    { text: new RichEmbed().setDescription("Hello").addField("Gamer", "Yes"), reactionMethod: "reaction", possibleAnswers: ["Ok"] }
+    {
+      text: new RichEmbed().setDescription("Hello").addField("Gamer", "Yes"),
+      reactionMethod: "reaction",
+      possibleAnswers: ["Ok"]
+    }
   ] as Question[]).createPrompt(
     ((await bot.users.get(process.env.USER_ID).createDM()) as unknown) as TextChannel,
     bot.users.get(process.env.USER_ID)
   );
   t.truthy(answers);
-
 });
 
 test("Test prompt with single question, bracket style with reaction.", async t => {

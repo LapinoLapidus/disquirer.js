@@ -1,4 +1,11 @@
 # Disquirer.js
+<img alt="npm bundle size" src="https://img.shields.io/bundlephobia/min/disquirer.js">
+<a href="https://discord.gg/jSB4y2m">
+<img alt="Discord" src="https://img.shields.io/discord/648932716909297664"></a>
+<img alt="npm" src="https://img.shields.io/npm/dw/disquirer.js">
+<br />
+
+[![NPM](https://nodei.co/npm/disquirer.js.png)](https://npmjs.org/package/disquirer.js)
 
 ### Purpose
 
@@ -30,8 +37,10 @@ const settings = {
   invalidReactionDeletionTime: 5000
 } as Settings;
 // For the text argument in the Question object, you can also pass a RichEmbed.
+// You can add a filter to each question to check if it fits certain criteria. This filter is in the form of a function.
+// in this example, it checks if the length of the answer is equal to 1.
 const questions = [
-  { text: "Testing one question.", reactionMethod: "reaction", possibleAnswers: ["Ok"] }
+  { text: "Testing one question.", reactionMethod: "reaction", possibleAnswers: ["Ok"], filter: (answer) => answer.response.length === 1 }
 ] as Question[];
 const disquirer = new Disquirer(questions, settings);
 
@@ -40,12 +49,12 @@ const answers = await disquirer.createPrompt(TEXT_CHANNEL, USER);
 ```
 
 Disquirer#createPrompt returns a Promise containing an array of [Answer](https://lapinolapidus.github.io/disquirer.js-docs/interfaces/_interfaces_answer_.answer.html)s.
-Documentation for the Question and Answer interfaces can be found [here for Answer](https://lapinolapidus.github.io/disquirer.js-docs/interfaces/_interfaces_answer_.answer.html) and [here for question](https://lapinolapidus.github.io/disquirer.js-docs/interfaces/_interfaces_question_.question.html)
+Documentation for the Question and Answer interfaces can be found [here for Answer](https://lapinolapidus.github.io/disquirer.js-docs/interfaces/_interfaces_answer_.answer.html) and [here for Question](https://lapinolapidus.github.io/disquirer.js-docs/interfaces/_interfaces_question_.question.html)
 For more examples, please refer to the [test file](test/test.ts),
 
 ### TODO:
 
-- Input validation: (length, type, ..).
+- ?
 
 ### Tests
 
@@ -60,6 +69,7 @@ Documentation can be found [here](https://lapinolapidus.github.io/disquirer.js-d
 Feel free to contribute to the project, the code's a bit messy though but you can change that. To start, fork this, make your changes, and make a pull request.
 Please use prettier to format your code (should be automatically run on commit.)
 Found a bug? Report it as an issue.
+Join the project related [Discord guild](https://discord.gg/jSB4y2mhttps://discord.gg/jSB4y2m).
 
 ### Credits
 

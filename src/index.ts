@@ -1,9 +1,5 @@
 import {
-  Message,
-  MessageCollector,
-  MessageReaction,
-  ReactionCollector,
-  RichEmbed,
+  DMChannel,
   TextChannel,
   User
 } from "discord.js";
@@ -99,7 +95,7 @@ export class Disquirer {
    * @param target
    * @returns promise - Resolves with an array of answers. Rejects with an error.
    */
-  public createPrompt = async (channel: TextChannel, target: User): Promise<Answer[]> => {
+  public createPrompt = async (channel: TextChannel | DMChannel, target: User): Promise<Answer[]> => {
     return new Asker([...this._questions], this._settings, channel, target).ask();
   };
 }
