@@ -1,8 +1,4 @@
-import {
-  DMChannel,
-  TextChannel,
-  User
-} from "discord.js";
+import { DMChannel, TextChannel, User } from "discord.js";
 import { Asker } from "./Asker";
 import { Answer } from "./interfaces/Answer";
 import { Question } from "./interfaces/Question";

@@ -36,7 +36,7 @@ export interface Question {
    * 2: b
    * 3: c
    */
-  style: "bracket" | "newLine";
+  style?: "bracket" | "newLine";
   /**
    * Whether you want the user to type out their response (text) or click on an emoji (reaction).
    */
@@ -52,5 +52,5 @@ export interface Question {
    * ```(answer) => answer.response.length === 1```
    *
    */
-  filter: (answer: Answer) => boolean;
+  filter: (answer: Answer) => Promise<boolean> | boolean;
 }

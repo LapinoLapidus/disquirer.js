@@ -76,7 +76,8 @@ export class Asker {
     const message = (await this.channel.send(
       question.text instanceof RichEmbed
         ? question.text
-        : question.text + (question.possibleAnswers ? Asker.getPossibleAnswers(question.style === "bracket", question) : "")
+        : question.text +
+            (question.possibleAnswers ? Asker.getPossibleAnswers(question.style === "bracket", question) : "")
     )) as Message;
     question.reactionMethod === "reaction" ? this.addReactions(message, question) : "";
     const collector: ReactionCollector | MessageCollector =
@@ -162,8 +163,10 @@ export class Asker {
    * @param msg
    * @param question
    */
-  private handleMessageEvent = (msg: Message, question: Question): Answer | null => {
-    const possibleAnswers = question.possibleAnswers ? question.possibleAnswers.map(answer => answer.toLocaleLowerCase()) : [];
+  private handleMessageEvent = async (msg: Message, question: Question): Promise<Answer | null> => {
+    const possibleAnswers = question.possibleAnswers
+      ? question.possibleAnswers.map(answer => answer.toLocaleLowerCase())
+      : [];
 
     // Defaults possibleAnswerRequired to true.
     question.possibleAnswerRequired === undefined
@@ -187,12 +190,15 @@ export class Asker {
       }
     }
 
-    const filterPassed = this.currentQuestion.filter ? this.currentQuestion.filter({
-      response: possibleAnswers[Number(msg.content)] === undefined ? msg.content : possibleAnswers[Number(msg.content)],
-      responseId: Number(msg.content),
-      userAnswer: msg
-    } as Answer) : true;
-    if(filterPassed) {
+    const filterPassed = this.currentQuestion.filter
+      ? await this.currentQuestion.filter({
+          response:
+            possibleAnswers[Number(msg.content)] === undefined ? msg.content : possibleAnswers[Number(msg.content)],
+          responseId: Number(msg.content),
+          userAnswer: msg
+        } as Answer)
+      : true;
+    if (filterPassed) {
       return {
         response: msg.content,
         responseId: Number(
@@ -207,10 +213,9 @@ export class Asker {
     // Adds the unfinished question back to the array.
     this.questions.unshift(question);
     return;
-
   };
 
-  private controllerHandler = (
+  private controllerHandler = async (
     channel: TextChannel | DMChannel,
     target: User,
     element,
@@ -223,7 +228,7 @@ export class Asker {
     const answer: Answer | null =
       element instanceof MessageReaction
         ? this.handleReactionEvent(element as MessageReaction, question)
-        : this.handleMessageEvent(element as Message, question);
+        : await this.handleMessageEvent(element as Message, question);
     answers.push(answer);
     //
     collector.removeAllListeners();
@@ -243,7 +248,8 @@ export class Asker {
     const message = (await channel.send(
       question.text instanceof RichEmbed
         ? question.text
-        : question.text + (question.possibleAnswers ? Asker.getPossibleAnswers(question.style === "bracket", question) : "")
+        : question.text +
+            (question.possibleAnswers ? Asker.getPossibleAnswers(question.style === "bracket", question) : "")
     )) as Message;
     question.reactionMethod === "reaction" ? this.addReactions(message, question) : "";
 
